@@ -1,3 +1,4 @@
+import re
 import cv2
 import pytesseract
 from matplotlib import pyplot as plt
@@ -21,21 +22,36 @@ def extract_text_from_image(image_path):
     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL,
                                 cv2.CHAIN_APPROX_SIMPLE)
 
-    def get_day_index(c):
-        x, y, w, h = cv2.boundingRect(c)
-        # Divide image width into 7 equal columns (Mon=0, Tue=1, ..., Sun=6)
-        col_index = int(x / (img.shape[1] / 7))
-
-
-        return min(col_index, 6)  # Clamp to 0-6
-
     def contour_key(c):
         x, y, w, h = cv2.boundingRect(c)
         return (x // 10, y)  # Column first, then row
 
     days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 
+    # Sorting contours by columns then rows
     contours = sorted(contours, key=contour_key)
+
+    def ocr_perfect(block):
+        # 1. Grayscale + threshold
+        gray = cv2.cvtColor(block, cv2.COLOR_BGR2GRAY)
+        _, bw = cv2.threshold(gray, 120, 255, cv2.THRESH_BINARY_INV)
+        
+        # 2. ONLY sharpen (no rotation/deskew)
+        kernel = np.array([[-1,-1,-1],
+                        [-1, 9,-1],
+                        [-1,-1,-1]])
+        sharpened = cv2.filter2D(bw, -1, kernel)
+        
+        # 3. Pad borders to prevent cropping
+        h, w = sharpened.shape
+        padded = cv2.copyMakeBorder(sharpened, 10, 10, 10, 10, 
+                                cv2.BORDER_CONSTANT, value=255)
+        
+        # 4. Light dilation for letter connections
+        kernel = np.ones((1,1), np.uint8)
+        fixed = cv2.dilate(padded, kernel, iterations=1)
+        
+        return fixed
 
     classes = []
 
@@ -61,11 +77,11 @@ def extract_text_from_image(image_path):
         x1, y1 = min(x + w + pad, img.shape[1]), min(y + h + pad, img.shape[0]) 
         block = img[y0:y1, x0:x1]
 
-        block_gray = cv2.cvtColor(block, cv2.COLOR_BGR2GRAY)
-        block_bw = cv2.adaptiveThreshold(block_gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
-                                cv2.THRESH_BINARY, 11, 2)
+        cv2.imwrite(f'pre/block_{i:02d}_{days[day]}.png', block)
 
-        cv2.imwrite(f'output/block_{i:02d}_{days[day]}.png', block_bw)
+        block_bw = ocr_perfect(block)
+
+        cv2.imwrite(f'post/block_{i:02d}_{days[day]}.png', block_bw)
 
 
         extracted_text = pytesseract.image_to_string(block_bw)
@@ -73,12 +89,66 @@ def extract_text_from_image(image_path):
 
     return classes
 
+def parse_class(text):
+    # Clean and normalize
+    text = re.sub(r'\s+', ' ', text.strip().upper())
+    
+    result = {key: '' for key in ['day', 'course', 'class_code', 'class_type', 'start_time', 'end_time', 'location']}
+    
+    # 1. DAY: First 3-letter at start
+    day_match = re.search(r'^(MON|TUE|WED|THU|FRI|SAT|SUN)', text)
+    if day_match:
+        result['day'] = day_match.group(1)
+    
+    # 2. COURSE: Letters+digits pattern
+    course_match = re.search(r'([A-Z]{4,}\s*[0-9A-Z]{4})', text)
+    if course_match:
+        result['course'] = course_match.group(1)
+    
+    # 3. CLASS_CODE: -C01, -T02, TO2
+    code_match = re.search(r'-?\s*(C|T|L)\d{2}|-?\s*TO\d', text)
+    if code_match:
+        result['class_code'] = code_match.group(0).strip('- ')
+    
+    # 4. CLASS_TYPE: Known types
+    for typ in ['LECTURE', 'TUTORIAL', 'LABORATORY', 'LAB']:
+        if typ in text and result['class_type'] == '':
+            result['class_type'] = typ
+            break
+    
+    # 5. TIMES: First two ##:##AM/PM
+    times = re.findall(r'\d{1,2}:\d{2}(AM|PM)', text)
+    if len(times) >= 2:
+        result['start_time'], result['end_time'] = times[:2]
+    elif len(times) == 1:
+        result['start_time'] = times[0]
+    
+    # 6. LOCATION: Everything AFTER last time that looks like a room/building
+    # Find last time position
+    last_time_pos = 0
+    for time_match in re.finditer(r'\d{1,2}:\d{2}(AM|PM)', text):
+        last_time_pos = time_match.end()
+    
+    # Take text after last time + has building/room indicators
+    if last_time_pos > 0:
+        after_times = text[last_time_pos:].strip()
+        # Room indicators: 3-digit numbers, BLDG, CENTRE, HALL, etc.
+        if re.search(r'\d{3}|[A-Z]{4,}|\bBLDG?\b|\bCENTRE?\b|\bHALL?\b|\bRM?\b', after_times):
+            result['location'] = after_times.split('.')[0].strip()[:50]  # First 50 chars
+    
+    return result
+
 def main():
     image_path = 'sched.png'
-    classes = extract_text_from_image(image_path)
-    for cls in classes:
-        print(cls)
+    raw_classes = extract_text_from_image(image_path)
 
+    classes = []
+
+    for cls in raw_classes:
+        print(cls)
+        classes.append(parse_class(cls))
+    
+    print("completed")
 
 if __name__=="__main__":
     main()
