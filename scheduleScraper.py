@@ -4,6 +4,7 @@ import pytesseract
 from matplotlib import pyplot as plt
 import numpy as np
 from PIL import Image
+import json
 
 def extract_text_from_image(image_path):
     # Load original
@@ -135,11 +136,11 @@ def parse_class(text):
         # Room indicators: 3-digit numbers, BLDG, CENTRE, HALL, etc.
         if re.search(r'\d{3}|[A-Z]{4,}|\bBLDG?\b|\bCENTRE?\b|\bHALL?\b|\bRM?\b', after_times):
             result['location'] = after_times.split('.')[0].strip()[:50]  # First 50 chars
-    
+
     return result
 
 def main():
-    image_path = 'sched.png'
+    image_path = 'assets/sched.png'
     raw_classes = extract_text_from_image(image_path)
 
     classes = []
@@ -147,6 +148,9 @@ def main():
     for cls in raw_classes:
         print(cls)
         classes.append(parse_class(cls))
+
+    with open('parsed_class.json', 'w') as file:
+        json.dump(classes, file, indent=4)
     
     print("completed")
 
