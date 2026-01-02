@@ -49,20 +49,27 @@ imageInput.addEventListener('change', (event) => {
     handleFile(file);
 });
 
+const serverUrl = 'http://127.0.0.1:5000'; // Replace with your Flask server URL
+
 function handleFile(file) {
     if (file) {
-        const reader = new FileReader();
+        const formData = new FormData();
+        formData.append('file', file);
 
-        reader.onload = function(e) {
-            console.log('File read successfully');
-            imagePreview.style.display = 'block';
-            imagePreview.innerHTML = `<img src="${e.target.result}" alt="Uploaded Image" style="max-width: 100%; height: auto;">`;
-        };
-
-        reader.readAsDataURL(file);
+        fetch(`${serverUrl}/upload`, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                console.log('File uploaded successfully:', data.path);
+            } else {
+                console.error('Upload failed:', data.error);
+            }
+        })
+        .catch(error => console.error('Error uploading file:', error));
     } else {
         console.log('No file to handle');
-        imagePreview.style.display = 'none';
-        imagePreview.innerHTML = '';
     }
 }

@@ -5,6 +5,12 @@ from matplotlib import pyplot as plt
 import numpy as np
 from PIL import Image
 import json
+from flask import Flask, request, jsonify
+import os
+
+app = Flask(__name__)
+UPLOAD_FOLDER = 'assets/'
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 def extract_text_from_image(image_path):
     # Load original
@@ -139,6 +145,20 @@ def parse_class(text):
 
     return result
 
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file part'}), 400
+
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+
+    file_path = os.path.join(UPLOAD_FOLDER, 'sched.png')
+    file.save(file_path)
+    main()
+    return jsonify({'message': 'File uploaded successfully', 'path': file_path}), 200
+
 def main():
     image_path = 'assets/sched.png'
     raw_classes = extract_text_from_image(image_path)
@@ -146,13 +166,12 @@ def main():
     classes = []
 
     for cls in raw_classes:
-        print(cls)
         classes.append(parse_class(cls))
 
-    with open('parsed_class.json', 'w') as file:
+    with open('assets/parsed_class.json', 'w') as file:
         json.dump(classes, file, indent=4)
     
     print("completed")
 
 if __name__=="__main__":
-    main()
+    app.run(debug=True)

@@ -1,0 +1,146 @@
+[
+    {
+        "day": "MON",
+        "course": "COMPSCI 2XC3",
+        "class_code": "C01",
+        "class_type": "LECTURE",
+        "start_time": "AM",
+        "end_time": "AM",
+        "location": "HEALTH SCIENCE CENTRE 141"
+    },
+    {
+        "day": "MON",
+        "course": "COMPSCI 2DB3",
+        "class_code": "C01",
+        "class_type": "LECTURE",
+        "start_time": "AM",
+        "end_time": "PM",
+        "location": "JOHN HODGINS ENGINEER BLDG 376"
+    },
+    {
+        "day": "MON",
+        "course": "COMPSCI 2XC3",
+        "class_code": "",
+        "class_type": "LABORATORY",
+        "start_time": "PM",
+        "end_time": "PM",
+        "location": "BURKE SCIENCE BLDG"
+    },
+    {
+        "day": "MON",
+        "course": "INNOVATE 2C03",
+        "class_code": "C03",
+        "class_type": "LECTURE",
+        "start_time": "PM",
+        "end_time": "PM",
+        "location": "KENNETH TAYLOR HALL 109"
+    },
+    {
+        "day": "TUE",
+        "course": "COMPSCI 28D3",
+        "class_code": "C01",
+        "class_type": "LECTURE",
+        "start_time": "AM",
+        "end_time": "PM",
+        "location": "HEALTH SCIENCE CENTRE 141"
+    },
+    {
+        "day": "TUE",
+        "course": "COMPSCI 28D3",
+        "class_code": "T02",
+        "class_type": "TUTORIAL",
+        "start_time": "PM",
+        "end_time": "PM",
+        "location": "AN"
+    },
+    {
+        "day": "TUE",
+        "course": "COMPSCI 2AC3",
+        "class_code": "C01",
+        "class_type": "LECTURE",
+        "start_time": "PM",
+        "end_time": "PM",
+        "location": "BURKE SCIENCE BLDG"
+    },
+    {
+        "day": "WED",
+        "course": "COMPSCI 2DB3",
+        "class_code": "C01",
+        "class_type": "LECTURE",
+        "start_time": "AM",
+        "end_time": "PM",
+        "location": "JOHN HODGINS ENGINEER BLDG 376"
+    },
+    {
+        "day": "THU",
+        "course": "COMPSCI 2DB3",
+        "class_code": "TO2",
+        "class_type": "TUTORIAL",
+        "start_time": "AM",
+        "end_time": "AM",
+        "location": "AN"
+    },
+    {
+        "day": "THU",
+        "course": "COMPSCI 2XC3",
+        "class_code": "C01",
+        "class_type": "LECTURE",
+        "start_time": "AM",
+        "end_time": "AM",
+        "location": "HEALTH SCIENCE CENTRE 141"
+    },
+    {
+        "day": "THU",
+        "course": "COMPSCI 2SD3",
+        "class_code": "C01",
+        "class_type": "LECTURE",
+        "start_time": "AM",
+        "end_time": "PM",
+        "location": "HEALTH SCIENCE CENTRE 141"
+    },
+    {
+        "day": "THU",
+        "course": "COMPSCI 2AC3",
+        "class_code": "T01",
+        "class_type": "TUTORIAL",
+        "start_time": "PM",
+        "end_time": "PM",
+        "location": "CHESTER NEW HALLL B107"
+    },
+    {
+        "day": "THU",
+        "course": "COMPSCI 2AC3",
+        "class_code": "C01",
+        "class_type": "LECTURE",
+        "start_time": "PM",
+        "end_time": "PM",
+        "location": "BURKE SCIENCE BLDG"
+    },
+    {
+        "day": "FRI",
+        "course": "COMPSCI 2SD3",
+        "class_code": "C01",
+        "class_type": "LECTURE",
+        "start_time": "AM",
+        "end_time": "PM",
+        "location": "HEALTH SCIENCE CENTRE 141"
+    },
+    {
+        "day": "FRI",
+        "course": "COMPSCI 2DB3",
+        "class_code": "C01",
+        "class_type": "LECTURE",
+        "start_time": "PM",
+        "end_time": "PM",
+        "location": "JOHN HODGINS ENGINEER BLDG 376"
+    },
+    {
+        "day": "FRI",
+        "course": "COMPSCI 2AC3",
+        "class_code": "C01",
+        "class_type": "LECTURE",
+        "start_time": "PM",
+        "end_time": "PM",
+        "location": "BURKE SCIENCE BLDG"
+    }
+]
