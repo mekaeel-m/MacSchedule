@@ -4,17 +4,17 @@
         "course": "COMPSCI 2XC3",
         "class_code": "C01",
         "class_type": "LECTURE",
-        "start_time": "AM",
-        "end_time": "AM",
-        "location": "HEALTH SCIENCE CENTRE 141"
+        "start_time": "10:30 ",
+        "end_time": "11:20 ",
+        "location": "HEALTH SCIENCE CENTRE 1A1"
     },
     {
         "day": "MON",
         "course": "COMPSCI 2DB3",
-        "class_code": "C01",
+        "class_code": "",
         "class_type": "LECTURE",
-        "start_time": "AM",
-        "end_time": "PM",
+        "start_time": "11:30 ",
+        "end_time": "12:20 ",
         "location": "JOHN HODGINS ENGINEER BLDG 376"
     },
     {
@@ -22,125 +22,125 @@
         "course": "COMPSCI 2XC3",
         "class_code": "",
         "class_type": "LABORATORY",
-        "start_time": "PM",
-        "end_time": "PM",
+        "start_time": "14:30 ",
+        "end_time": "17:20 ",
         "location": "BURKE SCIENCE BLDG"
     },
     {
         "day": "MON",
-        "course": "INNOVATE 2C03",
-        "class_code": "C03",
+        "course": "INNOVATE 2603",
+        "class_code": "C01",
         "class_type": "LECTURE",
-        "start_time": "PM",
-        "end_time": "PM",
+        "start_time": "19:00 ",
+        "end_time": "22:00 ",
         "location": "KENNETH TAYLOR HALL 109"
     },
     {
-        "day": "TUE",
-        "course": "COMPSCI 28D3",
+        "day": "MON",
+        "course": "COMPSCI 2SD3",
         "class_code": "C01",
         "class_type": "LECTURE",
-        "start_time": "AM",
-        "end_time": "PM",
-        "location": "HEALTH SCIENCE CENTRE 141"
+        "start_time": "11:30 ",
+        "end_time": "12:20 ",
+        "location": "HEALTH SCIENCE CENTRE 1A1"
     },
     {
-        "day": "TUE",
-        "course": "COMPSCI 28D3",
-        "class_code": "T02",
+        "day": "MON",
+        "course": "TUTORIAL",
+        "class_code": "T01",
         "class_type": "TUTORIAL",
-        "start_time": "PM",
-        "end_time": "PM",
-        "location": "AN"
+        "start_time": "12:30 ",
+        "end_time": "14:20 ",
+        "location": "BURKE SCIENCE BIDG"
     },
     {
-        "day": "TUE",
+        "day": "MON",
         "course": "COMPSCI 2AC3",
         "class_code": "C01",
         "class_type": "LECTURE",
-        "start_time": "PM",
-        "end_time": "PM",
+        "start_time": "14:30 ",
+        "end_time": "16:20 ",
+        "location": "BURKE SCIENCE BLDG"
+    },
+    {
+        "day": "TUE",
+        "course": "COMPSCI 2DB3",
+        "class_code": "T04",
+        "class_type": "TUTORIAL",
+        "start_time": "10:30 ",
+        "end_time": "11:20 ",
+        "location": "BUILDING T13 107"
+    },
+    {
+        "day": "TUE",
+        "course": "COMPSCI 2DB3",
+        "class_code": "C01",
+        "class_type": "LECTURE",
+        "start_time": "11:30 ",
+        "end_time": "12:20 ",
+        "location": "JOHN HODGINS ENGINEER BLDG 376"
+    },
+    {
+        "day": "WED",
+        "course": "COMPSCI 2XC3",
+        "class_code": "C01",
+        "class_type": "LECTURE",
+        "start_time": "10:30 ",
+        "end_time": "11:20 ",
+        "location": "HEALTH SCIENCE CENTRE 1A1"
+    },
+    {
+        "day": "WED",
+        "course": "COMPSCI 2SD3",
+        "class_code": "C01",
+        "class_type": "LECTURE",
+        "start_time": "11:30 ",
+        "end_time": "12:20 ",
+        "location": "HEALTH SCIENCE CENTRE 1A1"
+    },
+    {
+        "day": "WED",
+        "course": "COMPSCI 2AC3",
+        "class_code": "T01",
+        "class_type": "TUTORIAL",
+        "start_time": "12:30 ",
+        "end_time": "14:20 ",
+        "location": "CHESTER NEW HALL B107"
+    },
+    {
+        "day": "WED",
+        "course": "COMPSCI 2AC3",
+        "class_code": "C01",
+        "class_type": "LECTURE",
+        "start_time": "14:30 ",
+        "end_time": "16:20 ",
         "location": "BURKE SCIENCE BLDG"
     },
     {
         "day": "WED",
-        "course": "COMPSCI 2DB3",
-        "class_code": "C01",
-        "class_type": "LECTURE",
-        "start_time": "AM",
-        "end_time": "PM",
-        "location": "JOHN HODGINS ENGINEER BLDG 376"
-    },
-    {
-        "day": "THU",
-        "course": "COMPSCI 2DB3",
-        "class_code": "TO2",
-        "class_type": "TUTORIAL",
-        "start_time": "AM",
-        "end_time": "AM",
-        "location": "AN"
-    },
-    {
-        "day": "THU",
-        "course": "COMPSCI 2XC3",
-        "class_code": "C01",
-        "class_type": "LECTURE",
-        "start_time": "AM",
-        "end_time": "AM",
-        "location": "HEALTH SCIENCE CENTRE 141"
-    },
-    {
-        "day": "THU",
         "course": "COMPSCI 2SD3",
         "class_code": "C01",
         "class_type": "LECTURE",
-        "start_time": "AM",
-        "end_time": "PM",
-        "location": "HEALTH SCIENCE CENTRE 141"
+        "start_time": "11:30 ",
+        "end_time": "12:20 ",
+        "location": "HEALTH SCIENCE CENTRE 1A1"
     },
     {
-        "day": "THU",
-        "course": "COMPSCI 2AC3",
-        "class_code": "T01",
-        "class_type": "TUTORIAL",
-        "start_time": "PM",
-        "end_time": "PM",
-        "location": "CHESTER NEW HALLL B107"
-    },
-    {
-        "day": "THU",
-        "course": "COMPSCI 2AC3",
-        "class_code": "C01",
-        "class_type": "LECTURE",
-        "start_time": "PM",
-        "end_time": "PM",
-        "location": "BURKE SCIENCE BLDG"
-    },
-    {
-        "day": "FRI",
-        "course": "COMPSCI 2SD3",
-        "class_code": "C01",
-        "class_type": "LECTURE",
-        "start_time": "AM",
-        "end_time": "PM",
-        "location": "HEALTH SCIENCE CENTRE 141"
-    },
-    {
-        "day": "FRI",
+        "day": "WED",
         "course": "COMPSCI 2DB3",
-        "class_code": "C01",
+        "class_code": "",
         "class_type": "LECTURE",
-        "start_time": "PM",
-        "end_time": "PM",
+        "start_time": "13:30 ",
+        "end_time": "14:20 ",
         "location": "JOHN HODGINS ENGINEER BLDG 376"
     },
     {
-        "day": "FRI",
+        "day": "WED",
         "course": "COMPSCI 2AC3",
-        "class_code": "C01",
+        "class_code": "",
         "class_type": "LECTURE",
-        "start_time": "PM",
-        "end_time": "PM",
+        "start_time": "14:30 ",
+        "end_time": "16:20 ",
         "location": "BURKE SCIENCE BLDG"
     }
 ]

@@ -7,6 +7,7 @@ from PIL import Image
 import json
 from flask import Flask, request, jsonify
 import os
+import shutil
 
 app = Flask(__name__)
 UPLOAD_FOLDER = 'assets/'
@@ -20,10 +21,15 @@ def extract_text_from_image(image_path):
     hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
     # Tune these bounds if your green shade is different
-    lower_green = np.array([35, 40, 40])   # H,S,V lower
-    upper_green = np.array([85, 255, 255]) # H,S,V upper
+    lower_green = np.array([41, 75, 190])
+    upper_green = np.array([50, 140, 255])
 
     mask = cv2.inRange(hsv, lower_green, upper_green)
+
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (1,1))
+    mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel, iterations=1)
+    mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel, iterations=2)
+
 
     # Find contours (each contour should correspond to one block)
     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL,
@@ -58,13 +64,16 @@ def extract_text_from_image(image_path):
         kernel = np.ones((1,1), np.uint8)
         fixed = cv2.dilate(padded, kernel, iterations=1)
         
-        return fixed
+        return gray
 
     classes = []
 
     first = True
     for i, c in enumerate(contours, start=1):
         x, y, w, h = cv2.boundingRect(c)
+
+        if w < 20 or h < 20:
+            continue  # Skip small noise contours
 
         if first:
             if (250 < x ):
@@ -74,7 +83,7 @@ def extract_text_from_image(image_path):
             first = False
             prev_x = x
         else:
-            if (prev_x < x):
+            if (prev_x < x - 100) and (day < 6):
                 day += 1
             prev_x = x
 
@@ -123,17 +132,17 @@ def parse_class(text):
             result['class_type'] = typ
             break
     
-    # 5. TIMES: First two ##:##AM/PM
-    times = re.findall(r'\d{1,2}:\d{2}(AM|PM)', text)
-    if len(times) >= 2:
-        result['start_time'], result['end_time'] = times[:2]
-    elif len(times) == 1:
-        result['start_time'] = times[0]
+    # 5. TIMES: Extract start and end times, even if split across lines
+    time_matches = re.findall(r'(\d{1,2}:\d{2}\s*(?:AM|PM)?)', text)
+    if len(time_matches) >= 2:
+        result['start_time'], result['end_time'] = time_matches[:2]
+    elif len(time_matches) == 1:
+        result['start_time'] = time_matches[0]
     
     # 6. LOCATION: Everything AFTER last time that looks like a room/building
     # Find last time position
     last_time_pos = 0
-    for time_match in re.finditer(r'\d{1,2}:\d{2}(AM|PM)', text):
+    for time_match in re.finditer(r'\d{1,2}:\d{2}\s*(?:AM|PM)?', text):
         last_time_pos = time_match.end()
     
     # Take text after last time + has building/room indicators
@@ -145,8 +154,20 @@ def parse_class(text):
 
     return result
 
+def erase_folder_contents(folder_path):
+    for filename in os.listdir(folder_path):
+        file_path = os.path.join(folder_path, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)
+            elif os.path.isdir(file_path):
+                shutil.rmtree(file_path)
+        except Exception as e:
+            print('Failed to delete %s. Reason: %s' % (file_path, e))
+
 @app.route('/upload', methods=['POST'])
 def upload_file():
+    erase_folder_contents('assets/')
     if 'file' not in request.files:
         return jsonify({'error': 'No file part'}), 400
 
@@ -156,22 +177,66 @@ def upload_file():
 
     file_path = os.path.join(UPLOAD_FOLDER, 'sched.png')
     file.save(file_path)
+
     main()
+
+    return jsonify({'message': 'File uploaded successfully', 'path': file_path}), 200
+
+@app.route('/process', methods=['POST'])
+def process_file():
+    erase_folder_contents('assets/')
+
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file part'}), 400
+
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+
+    file_path = os.path.join(UPLOAD_FOLDER, 'sched.png')
+    file.save(file_path)
+
+    main()
+
     return jsonify({'message': 'File uploaded successfully', 'path': file_path}), 200
 
 def main():
+
+    erase_folder_contents('pre/')
+    erase_folder_contents('post/')
+
     image_path = 'assets/sched.png'
     raw_classes = extract_text_from_image(image_path)
 
     classes = []
 
     for cls in raw_classes:
-        classes.append(parse_class(cls))
+        temp = parse_class(cls)
+        if is_class_data_complete(temp):
+            classes.append(temp)
 
     with open('assets/parsed_class.json', 'w') as file:
         json.dump(classes, file, indent=4)
     
     print("completed")
+
+def is_class_data_complete(class_data):
+    """
+    Check if a class has all the important data before adding it.
+
+    Args:
+        class_data (dict): A dictionary containing class information.
+
+    Returns:
+        bool: True if the class has all required fields, False otherwise.
+    """
+    required_fields = ['day', 'course', 'class_type', 'start_time', 'end_time', 'location']
+    
+    for field in required_fields:
+        if not class_data.get(field):
+            return False
+
+    return True
 
 if __name__=="__main__":
     app.run(debug=True)
