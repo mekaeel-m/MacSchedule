@@ -72,8 +72,10 @@ def extract_text_from_image(image_path):
     for i, c in enumerate(contours, start=1):
         x, y, w, h = cv2.boundingRect(c)
 
-        if w < 20 or h < 20:
+        if w < 50 or h < 50:
             continue  # Skip small noise contours
+
+        print (x)
 
         if first:
             if (250 < x ):
@@ -83,7 +85,9 @@ def extract_text_from_image(image_path):
             first = False
             prev_x = x
         else:
-            if (prev_x < x - 100) and (day < 6):
+            if (200 < x - prev_x):
+                day += 2
+            elif (prev_x < x - 75) and (day < 6):
                 day += 1
             prev_x = x
 
@@ -150,7 +154,7 @@ def parse_class(text):
         after_times = text[last_time_pos:].strip()
         # Room indicators: 3-digit numbers, BLDG, CENTRE, HALL, etc.
         if re.search(r'\d{3}|[A-Z]{4,}|\bBLDG?\b|\bCENTRE?\b|\bHALL?\b|\bRM?\b', after_times):
-            result['location'] = after_times.split('.')[0].strip()[:50]  # First 50 chars
+            result['location'] = after_times.strip()[:50]
 
     return result
 
