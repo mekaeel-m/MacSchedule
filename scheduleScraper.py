@@ -48,24 +48,11 @@ def extract_text_from_image(image_path):
     contours = sorted(contours, key=contour_key)
 
     def ocr_perfect(block):
-        # 1. Grayscale + threshold
-        gray = cv2.cvtColor(block, cv2.COLOR_BGR2GRAY)
-        _, bw = cv2.threshold(gray, 120, 255, cv2.THRESH_BINARY_INV)
-        
-        # 2. ONLY sharpen (no rotation/deskew)
-        kernel = np.array([[-1,-1,-1],
-                        [-1, 9,-1],
-                        [-1,-1,-1]])
-        sharpened = cv2.filter2D(bw, -1, kernel)
-        
-        # 3. Pad borders to prevent cropping
-        h, w = sharpened.shape
-        padded = cv2.copyMakeBorder(sharpened, 10, 10, 10, 10, 
-                                cv2.BORDER_CONSTANT, value=255)
-        
-        # 4. Light dilation for letter connections
-        kernel = np.ones((1,1), np.uint8)
-        fixed = cv2.dilate(padded, kernel, iterations=1)
+        # 1. Grayscale
+        img = cv2.resize(block, None, fx=4, fy=4, interpolation=cv2.INTER_CUBIC)
+    
+        # Convert to grayscale
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         
         return gray
 
