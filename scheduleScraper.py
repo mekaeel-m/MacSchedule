@@ -8,8 +8,11 @@ import json
 from flask import Flask, request, jsonify
 import os
 import shutil
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "http://127.0.0.1:5500"}})
+
 UPLOAD_FOLDER = 'assets/'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
@@ -75,8 +78,6 @@ def extract_text_from_image(image_path):
         if w < 50 or h < 50:
             continue  # Skip small noise contours
 
-        print (x)
-
         if first:
             if (250 < x ):
                 day = 1
@@ -111,12 +112,12 @@ def extract_text_from_image(image_path):
 
 def parse_class(text):
     # Clean and normalize
-    text = re.sub(r'\s+', ' ', text.strip().upper())
+    text = re.sub(r'\s+', ' ', text.strip())
     
     result = {key: '' for key in ['day', 'course', 'class_code', 'class_type', 'start_time', 'end_time', 'location']}
     
     # 1. DAY: First 3-letter at start
-    day_match = re.search(r'^(MON|TUE|WED|THU|FRI|SAT|SUN)', text)
+    day_match = re.search(r'^(Mon|Tue|Wed|Thu|Fri|Sat|Sun)', text)
     if day_match:
         result['day'] = day_match.group(1)
     
@@ -126,12 +127,13 @@ def parse_class(text):
         result['course'] = course_match.group(1)
     
     # 3. CLASS_CODE: -C01, -T02, TO2
-    code_match = re.search(r'-?\s*(C|T|L)\d{2}|-?\s*TO\d', text)
+    code_match = re.search(r'-?\s*(C|T|L|c)\d{2}|-?\s*TO\d|-?\s*(C|T|L|c)*(O|o|0)\d{1}|-?\s*(C|T|L|c)*(O|0|o)*(t|a)', text)
+    # code_match = re.search(r'-?\s*(C|T|L|c)\d{2}|-?\s*TO\d|-?\s*(C|T|L|c)O\d{1}|-?\s*(C|T|L|c)Ot|-?\s*(C|T|L|c)0t', text)
     if code_match:
-        result['class_code'] = code_match.group(0).strip('- ')
+        result['class_code'] = code_match.group(0).strip('- ').replace('t', '1').replace('a', '4').upper().replace('O', '0')
     
     # 4. CLASS_TYPE: Known types
-    for typ in ['LECTURE', 'TUTORIAL', 'LABORATORY', 'LAB']:
+    for typ in ['Lecture', 'Tutorial', 'Laboratory', 'Lab']:
         if typ in text and result['class_type'] == '':
             result['class_type'] = typ
             break
@@ -182,29 +184,9 @@ def upload_file():
     file_path = os.path.join(UPLOAD_FOLDER, 'sched.png')
     file.save(file_path)
 
-    main()
+    return output()
 
-    return jsonify({'message': 'File uploaded successfully', 'path': file_path}), 200
-
-@app.route('/process', methods=['POST'])
-def process_file():
-    erase_folder_contents('assets/')
-
-    if 'file' not in request.files:
-        return jsonify({'error': 'No file part'}), 400
-
-    file = request.files['file']
-    if file.filename == '':
-        return jsonify({'error': 'No selected file'}), 400
-
-    file_path = os.path.join(UPLOAD_FOLDER, 'sched.png')
-    file.save(file_path)
-
-    main()
-
-    return jsonify({'message': 'File uploaded successfully', 'path': file_path}), 200
-
-def main():
+def output():
 
     erase_folder_contents('pre/')
     erase_folder_contents('post/')
@@ -221,8 +203,12 @@ def main():
 
     with open('assets/parsed_class.json', 'w') as file:
         json.dump(classes, file, indent=4)
+
+    with open('assets/raw_class.json', 'w') as file:
+        json.dump(raw_classes, file, indent=4)
     
     print("completed")
+    return classes
 
 def is_class_data_complete(class_data):
     """
