@@ -141,11 +141,12 @@ def parse_class(text):
     # Take text after last time + has building/room indicators
     if last_time_pos > 0:
         after_times = text[last_time_pos:].strip()
-        # Room indicators: 3-digit numbers, BLDG, CENTRE, HALL, etc.
-        if re.search(r'\d{3}|[A-Z]{4,}|\bBLDG?\b|\bCENTRE?\b|\bHALL?\b|\bRM?\b', after_times):
+        # Room indicators: 3-digit numbers, Bldg, Centre, Hall, etc.
+        if re.search(r'\d{3}|[A-Z]{4,}|\bBldg?\b|\bCentre?\b|\bHall?\b|\bRm?\b', after_times):
             result['location'] = after_times.strip()[:50]
 
     return result
+
 
 def erase_folder_contents(folder_path):
     for filename in os.listdir(folder_path):
