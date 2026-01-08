@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>McMaster Schedule to GCal</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:,">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <script defer src="script.js"></script>
 </head>
 
 <body>
@@ -16,11 +18,11 @@
         <section class="description">
             <p>Just paste a screenshot of your McMaster schedule from Mosaic and it will get added into your google calender. Support for MyTimeTable will be added in the future.</p>
         </section>
-        <section class="signin">
-                <button id="authorize_button" onclick="handleAuthClick()" style="background-color: #800000; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Log into Google</button>
-                <button id="signout_button" onclick="handleSignoutClick()" style="background-color: #800000; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">Sign Out</button>
-        </section>
         
+        <section class="signin">
+            <button id="login" style="background-color: #800000; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">login</button>
+        </section>
+
         <section class="image-upload">
             <div id="dropZone">
                 Drop an image here or paste it
@@ -31,8 +33,6 @@
         <section id="content"></section>
     </main>
     
-    <script src="script.js"></script>
-    <script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
-    <script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
+    
 </body>
 </html>
